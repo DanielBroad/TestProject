@@ -32,10 +32,13 @@
 -(void) contextSave;
 
 -(TPUser*) currentUser;
+-(TPUser*) addUserWithID: (NSNumber*) userID;
+
+-(NSArray*) allAlbums;
+-(TPAlbum*) addAlbumWithID: (NSNumber*) albumID;
 
 -(NSFetchRequest*) fetchRequest_photosForTitle: (NSString*) title;
 -(NSArray*) allPhotos;
-
 -(TPPhoto*) addPhotoWithID: (NSNumber*) photoID;
 
 

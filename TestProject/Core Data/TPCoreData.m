@@ -13,8 +13,9 @@ static TPCoreData *singleton;
 static NSString * const kDataModelName = @"TestProject";
 static NSString * const kDatabaseFilename = @"database.sqlite";
 
-static NSString * const kPhotosEntityName = @"TPPhoto";
+static NSString * const kPhotoEntityName = @"TPPhoto";
 static NSString * const kUserEntityName = @"TPUser";
+static NSString * const kAlbumEntityName = @"TPAlbum";
 
 @implementation TPCoreData {
     NSManagedObjectContext			*_managedObjectContext;
@@ -179,6 +180,40 @@ static NSString * const kUserEntityName = @"TPUser";
 //								Methods
 // **********************************************************************************************
 
+-(TPUser*) currentUser {
+    NSFetchRequest *fetchRequest = [self fetchRequestForEntity:kUserEntityName withPredicate:nil sortDescriptors:nil faultsAllowed:YES];
+    
+    NSError *error = nil;
+    NSArray *users = [[self managedObjectContext] executeFetchRequest:fetchRequest error:&error];
+    if (error) {
+        [self.delegate coreDataSingleton:self didReportError:error];
+    }
+    return [users firstObject]; // there can be only one, like highlander
+}
+
+-(TPUser*) addUserWithID: (NSNumber*) userID {
+    TPUser *user = (TPUser*) [self addObjectForEntityName:kUserEntityName];
+    user.userID = userID;
+    return user;
+}
+
+-(NSArray*) allAlbums {
+    NSFetchRequest *fetchRequest = [self fetchRequestForEntity:kAlbumEntityName withPredicate:nil sortDescriptors:nil faultsAllowed:YES];
+    
+    NSError *error = nil;
+    NSArray *albums = [[self managedObjectContext] executeFetchRequest:fetchRequest error:&error];
+    if (error) {
+        [self.delegate coreDataSingleton:self didReportError:error];
+    }
+    return albums;
+}
+
+-(TPAlbum*) addAlbumWithID: (NSNumber*) albumID {
+    TPAlbum *album = (TPAlbum*) [self addObjectForEntityName:kAlbumEntityName];
+    album.albumID = albumID;
+    return album;
+}
+
 -(NSFetchRequest*) fetchRequest_photosForTitle: (NSString*) title {
     NSPredicate *predicate = nil;
     
@@ -190,13 +225,13 @@ static NSString * const kUserEntityName = @"TPUser";
     NSArray *sortDescriptors = @[
                                  [NSSortDescriptor sortDescriptorWithKey:@"photoID" ascending:YES]
                                  ];
-    NSFetchRequest *fetchRequest = [self fetchRequestForEntity:kPhotosEntityName withPredicate:predicate sortDescriptors:sortDescriptors faultsAllowed:YES];
+    NSFetchRequest *fetchRequest = [self fetchRequestForEntity:kPhotoEntityName withPredicate:predicate sortDescriptors:sortDescriptors faultsAllowed:YES];
     
     return fetchRequest;
 }
 
 -(NSArray*) allPhotos {
-    NSFetchRequest *fetchRequest = [self fetchRequestForEntity:kPhotosEntityName withPredicate:nil sortDescriptors:nil faultsAllowed:YES];
+    NSFetchRequest *fetchRequest = [self fetchRequestForEntity:kPhotoEntityName withPredicate:nil sortDescriptors:nil faultsAllowed:YES];
     
     NSError *error = nil;
     NSArray *photos = [[self managedObjectContext] executeFetchRequest:fetchRequest error:&error];
@@ -207,7 +242,7 @@ static NSString * const kUserEntityName = @"TPUser";
 }
 
 -(TPPhoto*) addPhotoWithID: (NSNumber*) photoID {
-    TPPhoto *photo = (TPPhoto*) [self addObjectForEntityName:kPhotosEntityName];
+    TPPhoto *photo = (TPPhoto*) [self addObjectForEntityName:kPhotoEntityName];
     photo.photoID = photoID;
     return  photo;
 }

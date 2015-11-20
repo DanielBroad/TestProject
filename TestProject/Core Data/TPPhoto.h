@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString * const kDictionaryKeyPhotoID;
+extern NSString * const kDictionaryKeyPhoto_PhotoID;
 
 @interface TPPhoto : NSManagedObject
 

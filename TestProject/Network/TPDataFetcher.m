@@ -23,6 +23,7 @@ static TPDataFetcher *singleton;
     NSMutableArray *_activeDownloadTasks;
     
     NSInteger networkActivity;
+    BOOL _userIsValidated;
 }
 
 +(instancetype) sharedInstance {
@@ -70,39 +71,67 @@ static TPDataFetcher *singleton;
 //								Get Data from Network (No Background Downloads)
 // **********************************************************************************************
 
--(void) validateUserID: (NSInteger) userID {
+-(void) populateDataCompletionHandler: (void(^)(NSError *error)) completionHandler {
+    [self populateAlbumsCompletionHandler:^(NSError *error) {
+        if (error) {
+            completionHandler(error);
+            return;
+        }
+        
+        
+    }];
+}
+
+-(void) validateUserID: (NSInteger) userID completionHandler: (void(^)(BOOL validated, NSError *error)) completionHandler {
     NSString *validatePath = [NSString stringWithFormat:kUserURL,(long)userID];
     NSURL *validateURL = [NSURL URLWithString:validatePath];
     
+    NSLog(@"%@",validateURL);
+    
     NSURLSessionDataTask *task = [_foregroundSession dataTaskWithURL:validateURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
+        if (error) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                if (completionHandler) {
+                    completionHandler(NO,error);
+                }
+            });
+            return;
+        }
+        
         NSError *parseError = nil;
-        NSArray *users = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+        NSDictionary *userDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
         if (parseError) {
             dispatch_sync(dispatch_get_main_queue(), ^{
-                [self.delegate fetcherSingleton:self didReportError:error];
+                if (completionHandler) {
+                    completionHandler(NO,parseError);
+                }
             });
             return;
         }
         
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self stopNetworkActivity];
-
-            NSDictionary *userDict = [users firstObject];
             
-            if (error) {
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    [self.delegate fetcherSingleton:self didReportError:error];
-                });
-                return;
-            }
-            
-            NSNumber *userID = [userDict objectForKey:kDictionaryKeyPhotoID];
+            NSNumber *userID = [userDict objectForKey:kDictionaryKeyPhoto_PhotoID];
             
             TPUser *user = [[TPCoreData sharedInstance] currentUser];
-            if ([user.userID compare:userID]!=NSOrderedSame) {
-                
+            if (!user || [user.userID compare:userID]!=NSOrderedSame) {
+                if (user) {
+                    [[TPCoreData sharedInstance].managedObjectContext deleteObject:user];
+                }
+                user = [[TPCoreData sharedInstance] addUserWithID: userID];
+                [user populateFromDictionary: userDict];
             }
+            
+            if ([[TPCoreData sharedInstance] currentUser]) {
+                _userIsValidated = YES;
+            }
+            if (completionHandler) {
+                completionHandler(_userIsValidated,nil);
+            }
+            
+            
         });
         
     }];
@@ -111,21 +140,27 @@ static TPDataFetcher *singleton;
     [_activeDownloadTasks addObject:task];
 }
 
--(void) populateAlbums {
-    
+-(BOOL) userIsValidated {
+    return _userIsValidated;
 }
 
--(void) populateData {
-    NSMutableSet *existingRecords = [NSMutableSet set];
-    for (TPPhoto *photo in [TPCoreData sharedInstance].allPhotos) {
-        [existingRecords addObject:photo.photoID];
+-(void) populateAlbumsCompletionHandler: (void(^)(NSError *error)) completionHandler {
+    TPUser *user = [TPCoreData sharedInstance].currentUser;
+    
+    NSString *albumsPath = [NSString stringWithFormat:kAlbumsURL,(long)[user.userID integerValue]];
+    NSURL *albumsURL = [NSURL URLWithString:albumsPath];
+    
+    NSMutableSet *existingAlbums = [NSMutableSet set];
+    for (TPAlbum *album in [TPCoreData sharedInstance].allAlbums) {
+        [existingAlbums addObject:album.albumID];
     }
     
-    NSURL *url = [NSURL URLWithString:kPhotosURL];
+    NSLog(@"%@",albumsURL);
     
-    NSURLSessionDataTask *task = [_foregroundSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    NSURLSessionDataTask *task = [_foregroundSession dataTaskWithURL:albumsURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error) {
             dispatch_sync(dispatch_get_main_queue(), ^{
+                [self stopNetworkActivity];
                 [self.delegate fetcherSingleton:self didReportError:error];
             });
             return;
@@ -135,6 +170,58 @@ static TPDataFetcher *singleton;
         NSArray *photos = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
         if (parseError) {
             dispatch_sync(dispatch_get_main_queue(), ^{
+                [self stopNetworkActivity];
+                [self.delegate fetcherSingleton:self didReportError:error];
+            });
+            return;
+        }
+        
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self stopNetworkActivity];
+            
+            TPUser *currentUser = [TPCoreData sharedInstance].currentUser; //getting this again as we've crossed a thread boundary and back.
+            
+            for (NSDictionary *photoDict in photos) {
+                NSNumber *albumID = [photoDict objectForKey:kDictionaryKeyAlbum_AlbumID];
+                
+                if (![existingAlbums containsObject:albumID]) {
+                    // guess we should add it then
+                    TPAlbum *newAlbum = [[TPCoreData sharedInstance] addAlbumWithID:albumID];
+                    newAlbum.user = currentUser;
+                    [newAlbum populateFromDictionary: photoDict];
+                    [existingAlbums addObject:albumID];
+                }
+            }
+
+        });
+    }];
+    [self startNetworkActivity];
+    [task resume];
+    [_activeDownloadTasks addObject:task];
+}
+
+-(void) populatePhotos {
+    NSMutableSet *existingRecords = [NSMutableSet set];
+    for (TPPhoto *photo in [TPCoreData sharedInstance].allPhotos) {
+        [existingRecords addObject:photo.photoID];
+    }
+    
+    NSURL *photosURL = [NSURL URLWithString:kPhotosURL];
+    NSLog(@"%@",photosURL);
+    NSURLSessionDataTask *task = [_foregroundSession dataTaskWithURL:photosURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [self stopNetworkActivity];
+                [self.delegate fetcherSingleton:self didReportError:error];
+            });
+            return;
+        }
+        
+        NSError *parseError = nil;
+        NSArray *photos = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+        if (parseError) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [self stopNetworkActivity];
                 [self.delegate fetcherSingleton:self didReportError:error];
             });
             return;
@@ -144,7 +231,7 @@ static TPDataFetcher *singleton;
             [self stopNetworkActivity];
             
             for (NSDictionary *photoDict in photos) {
-                NSNumber *photoID = [photoDict objectForKey:kDictionaryKeyPhotoID];
+                NSNumber *photoID = [photoDict objectForKey:kDictionaryKeyPhoto_PhotoID];
                 
                 if (![existingRecords containsObject:photoID]) {
                     // guess we should add it then

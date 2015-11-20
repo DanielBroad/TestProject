@@ -10,12 +10,16 @@
 #import "TPPhoto.h"
 #import "TPUser.h"
 
+NSString * const kDictionaryKeyAlbum_AlbumID = @"id";
+NSString * const kDictionaryKeyAlbum_Title = @"title";
+
 @implementation TPAlbum
 
 // Insert code here to add functionality to your managed object subclass
 
 -(void) populateFromDictionary: (NSDictionary*) dictionary {
-    
+    self.title = [dictionary objectForKey:kDictionaryKeyAlbum_Title];
+    self.albumID = [dictionary objectForKey:kDictionaryKeyAlbum_AlbumID];
 }
 
 @end

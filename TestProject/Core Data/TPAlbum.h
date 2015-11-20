@@ -13,9 +13,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+extern NSString *const kDictionaryKeyAlbum_AlbumID;
+
 @interface TPAlbum : NSManagedObject
 
-// Insert code here to declare functionality of your managed object subclass
+-(void) populateFromDictionary: (NSDictionary*) dictionary;
 
 @end
 

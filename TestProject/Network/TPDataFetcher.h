@@ -23,6 +23,9 @@
 
 @property (weak,nonatomic) id<TPDataFetcherDelegate> delegate;
 
--(void) populateData;
+-(void) validateUserID: (NSInteger) userID completionHandler: (void(^)(BOOL validated, NSError *error)) completionHandler;
+-(BOOL) userIsValidated;
+
+-(void) populateDataCompletionHandler: (void(^)(NSError *error)) completionHandler;
 
 @end

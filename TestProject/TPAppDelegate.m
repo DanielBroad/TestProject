@@ -45,7 +45,24 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    [[TPDataFetcher sharedInstance] populateData];
+    if (![TPDataFetcher sharedInstance].userIsValidated) {
+        NSNumber *currentUserID = [TPCoreData sharedInstance].currentUser.userID;
+        if (!currentUserID) {
+            currentUserID = @1;
+        }
+        [[TPDataFetcher sharedInstance] validateUserID:[currentUserID integerValue] completionHandler:^(BOOL validated, NSError *error) {
+            if (error) {
+                [self reportError: error isTerminal: YES];
+            } else {
+                [[TPDataFetcher sharedInstance] populateDataCompletionHandler:^(NSError *error) {
+                    if (error) {
+                        [self reportError: error isTerminal: YES];
+                    };
+                }];
+            }
+        }];
+    }
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TPUser : NSManagedObject
 
-// Insert code here to declare functionality of your managed object subclass
+-(void) populateFromDictionary: (NSDictionary*) dictionary;
 
 @end
 
