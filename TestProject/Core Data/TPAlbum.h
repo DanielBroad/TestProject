@@ -1,5 +1,5 @@
 //
-//  TPPhoto.h
+//  TPAlbum.h
 //  TestProject
 //
 //  Created by Daniel Broad on 20/11/2015.
@@ -9,18 +9,16 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+@class TPPhoto, TPUser;
+
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString * const kDictionaryKeyPhotoID;
-
-@interface TPPhoto : NSManagedObject
+@interface TPAlbum : NSManagedObject
 
 // Insert code here to declare functionality of your managed object subclass
-
--(void) populateFromDictionary: (NSDictionary*) dictionary;
 
 @end
 
 NS_ASSUME_NONNULL_END
 
-#import "TPPhoto+CoreDataProperties.h"
+#import "TPAlbum+CoreDataProperties.h"

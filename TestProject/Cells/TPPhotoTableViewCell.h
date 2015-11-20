@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@class TPPhoto;
+
 @interface TPPhotoTableViewCell : UITableViewCell
+
+@property (weak) IBOutlet UIImageView *photoThumbnail;
+@property (weak) IBOutlet UILabel *titleLabel;
+@property (weak) IBOutlet UILabel *dateTimeLabel;
+
+@property (strong,nonatomic) TPPhoto *photo;
 
 @end

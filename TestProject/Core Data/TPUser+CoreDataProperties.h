@@ -13,22 +13,24 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class TPAlbum;
+
 @interface TPUser (CoreDataProperties)
 
 @property (nullable, nonatomic, retain) NSNumber *userID;
 @property (nullable, nonatomic, retain) NSString *name;
 @property (nullable, nonatomic, retain) NSString *email;
 @property (nullable, nonatomic, retain) NSString *address;
-@property (nullable, nonatomic, retain) NSSet<TPPhoto *> *photos;
+@property (nullable, nonatomic, retain) NSSet<TPAlbum *> *albums;
 
 @end
 
 @interface TPUser (CoreDataGeneratedAccessors)
 
-- (void)addPhotosObject:(TPPhoto *)value;
-- (void)removePhotosObject:(TPPhoto *)value;
-- (void)addPhotos:(NSSet<TPPhoto *> *)values;
-- (void)removePhotos:(NSSet<TPPhoto *> *)values;
+- (void)addAlbumsObject:(TPAlbum *)value;
+- (void)removeAlbumsObject:(TPAlbum *)value;
+- (void)addAlbums:(NSSet<TPAlbum *> *)values;
+- (void)removeAlbums:(NSSet<TPAlbum *> *)values;
 
 @end
 

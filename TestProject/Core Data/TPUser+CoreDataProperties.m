@@ -17,6 +17,6 @@
 @dynamic name;
 @dynamic email;
 @dynamic address;
-@dynamic photos;
+@dynamic albums;
 
 @end

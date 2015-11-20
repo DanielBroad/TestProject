@@ -11,8 +11,10 @@
 #import "TPDataFetcher.h"
 #import "TPCoreData.h"
 
-static NSString * const kPhotosURL = @"http://jsonplaceholder.typicode.com/photos";
-static NSString * const kDictionaryKeyPhotoID = @"id";
+static NSString * const kPhotosURL = @"http://jsonplaceholder.typicode.com/photos?albumId=%ld";
+static NSString * const kUserURL = @"http://jsonplaceholder.typicode.com/users/%ld";
+static NSString * const kAlbumsURL = @"http://jsonplaceholder.typicode.com/albums?userId=%ld";
+
 
 static TPDataFetcher *singleton;
 
@@ -67,6 +69,51 @@ static TPDataFetcher *singleton;
 // **********************************************************************************************
 //								Get Data from Network (No Background Downloads)
 // **********************************************************************************************
+
+-(void) validateUserID: (NSInteger) userID {
+    NSString *validatePath = [NSString stringWithFormat:kUserURL,(long)userID];
+    NSURL *validateURL = [NSURL URLWithString:validatePath];
+    
+    NSURLSessionDataTask *task = [_foregroundSession dataTaskWithURL:validateURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        
+        NSError *parseError = nil;
+        NSArray *users = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+        if (parseError) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [self.delegate fetcherSingleton:self didReportError:error];
+            });
+            return;
+        }
+        
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self stopNetworkActivity];
+
+            NSDictionary *userDict = [users firstObject];
+            
+            if (error) {
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    [self.delegate fetcherSingleton:self didReportError:error];
+                });
+                return;
+            }
+            
+            NSNumber *userID = [userDict objectForKey:kDictionaryKeyPhotoID];
+            
+            TPUser *user = [[TPCoreData sharedInstance] currentUser];
+            if ([user.userID compare:userID]!=NSOrderedSame) {
+                
+            }
+        });
+        
+    }];
+    [self startNetworkActivity];
+    [task resume];
+    [_activeDownloadTasks addObject:task];
+}
+
+-(void) populateAlbums {
+    
+}
 
 -(void) populateData {
     NSMutableSet *existingRecords = [NSMutableSet set];

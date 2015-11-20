@@ -7,17 +7,27 @@
 //
 
 #import "TPPhotoTableViewCell.h"
+#import "TPPhoto.h"
+
+static NSDateFormatter *photoCellDateFormatter;
 
 @implementation TPPhotoTableViewCell
 
-- (void)awakeFromNib {
-    // Initialization code
++(void) initialize {
+    if (!photoCellDateFormatter) {
+        photoCellDateFormatter = [[NSDateFormatter alloc] init];
+//        photoCellDateFormatter.timeStyle = NSDateFormatterFullStyle;
+//        photoCellDateFormatter.dateStyle = NSDateFormatterFullStyle;
+        photoCellDateFormatter.dateFormat = @"dd-MM-yyyy HH:mm:ss";
+    }
+    
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
+-(void) setPhoto:(TPPhoto *)photo {
+    if (_photo != photo) {
+        _photo = photo;
+        self.titleLabel.text = photo.title;
+        self.dateTimeLabel.text = [photoCellDateFormatter stringFromDate:photo.timeStamp];
+    }
 }
-
 @end

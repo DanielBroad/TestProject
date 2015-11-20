@@ -8,6 +8,14 @@
 
 #import "TPCoreData.h"
 
+static TPCoreData *singleton;
+
+static NSString * const kDataModelName = @"TestProject";
+static NSString * const kDatabaseFilename = @"database.sqlite";
+
+static NSString * const kPhotosEntityName = @"TPPhoto";
+static NSString * const kUserEntityName = @"TPUser";
+
 @implementation TPCoreData {
     NSManagedObjectContext			*_managedObjectContext;
     NSManagedObjectModel			*_managedObjectModel;
@@ -31,25 +39,13 @@
     }
     return self;
 }
+// **********************************************************************************************
+//								Utils
+// **********************************************************************************************
 
-#pragma mark - logging
-
--(void) log: (NSString*) log {
-    Class quincy = NSClassFromString(@"BWQuincyManager");
-    id<QuincyLogProtocol> quincyProtocol = (id)quincy;
-    
-    if ([quincyProtocol respondsToSelector:@selector(log:)]) {
-        [quincyProtocol log:log,nil];
-    }
-}
-
--(void) log: (NSString*) log WithVar: (id) var {
-    Class quincy = NSClassFromString(@"BWQuincyManager");
-    id<QuincyLogProtocol> quincyProtocol = (id)quincy;
-    
-    if ([quincyProtocol respondsToSelector:@selector(log:)]) {
-        [quincyProtocol log:log,var];
-    }
+-(NSString *)applicationCachesDirectory {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    return [paths firstObject];
 }
 
 // **********************************************************************************************
@@ -65,30 +61,18 @@
  */
 
 - (NSManagedObjectContext *) managedObjectContext {
-    // this function is background thread aware
+    NSAssert([NSThread isMainThread],@"Bad Programmer! This project does not support multi-threaded core data.");
     
-    if ([NSThread isMainThread]) {
-        
-        if (_managedObjectContext != nil) {
-            return _managedObjectContext;
-        }
-        
-        NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-        if (coordinator != nil) {
-            _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-            [_managedObjectContext setPersistentStoreCoordinator: coordinator];
-        }
+    if (_managedObjectContext != nil) {
         return _managedObjectContext;
-    } else {
-        NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-        if (coordinator != nil) {
-            NSManagedObjectContext *managedObjectContext = [[NSManagedObjectContext alloc] init];
-            [managedObjectContext setPersistentStoreCoordinator: coordinator];
-            return managedObjectContext;
-        }
     }
     
-    return nil;
+    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    if (coordinator != nil) {
+        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        [_managedObjectContext setPersistentStoreCoordinator: coordinator];
+    }
+    return _managedObjectContext;
 }
 
 - (NSManagedObjectID*) managedObjectIDForURIRepresentation: (NSURL*) url {
@@ -99,20 +83,16 @@
  If the model doesn't already exist, it is created by merging all of the models found in
  application bundle.
  */
+
 - (NSManagedObjectModel *)managedObjectModel {
     
     if (_managedObjectModel != nil) {
         return _managedObjectModel;
     }
     
-    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:[self dataModelName] ofType:@"momd"];
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:kDataModelName ofType:@"momd"];
     NSURL *momURL = [NSURL fileURLWithPath:path];
     _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:momURL];
-    
-    /*[nc addObserver:self
-     selector:@selector(modelChanged:)
-     name:NSManagedObjectContextObjectsDidChangeNotification
-     object:nil];*/
     
     return _managedObjectModel;
 }
@@ -123,56 +103,19 @@
  If the coordinator doesn't already exist, it is created and the application's store added to it.
  */
 
-// migrate the database and back again to solve corruption problems
-
-- (BOOL) rebuildDatabase {
-    NSError *error;
-    
-    NSPersistentStore *store = [[self.persistentStoreCoordinator persistentStores] objectAtIndex:0];
-    
-    NSURL *normalStoreUrl = [NSURL fileURLWithPath: [[DRApplicationPaths applicationHiddenDocumentsDirectory]
-                                                     stringByAppendingPathComponent: [self databaseName]]];
-    
-    NSURL *tempStoreUrl = [NSURL fileURLWithPath: [[DRApplicationPaths applicationHiddenDocumentsDirectory]
-                                                   stringByAppendingPathComponent: [self databaseName]]];
-    
-    [[NSFileManager defaultManager] removeItemAtURL:tempStoreUrl error:&error];
-    
-    NSMutableDictionary *pragmaOptions = [NSMutableDictionary dictionary];
-    [pragmaOptions setObject:@"DELETE" forKey:@"journal_mode"];
-    
-    NSDictionary * options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                              [NSNumber numberWithBool:YES], NSSQLiteAnalyzeOption,
-                              [NSNumber numberWithBool:YES], NSSQLiteManualVacuumOption,
-                              pragmaOptions,NSSQLitePragmasOption,
-                              nil];
-    
-    if ([self.persistentStoreCoordinator migratePersistentStore:store toURL:tempStoreUrl options:options withType:NSSQLiteStoreType error:&error]) {
-        if ([[NSFileManager defaultManager] removeItemAtURL:normalStoreUrl error:&error]) {
-            store = [[self.persistentStoreCoordinator persistentStores] objectAtIndex:0];
-            if ([self.persistentStoreCoordinator migratePersistentStore:store toURL:normalStoreUrl options:options withType:NSSQLiteStoreType error:&error]) {
-                [[NSFileManager defaultManager] removeItemAtURL:tempStoreUrl error:&error];
-                return YES;
-            }
-        }
-    }
-    
-    return NO;
-}
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
     
     if (_persistentStoreCoordinator != nil) {
         return _persistentStoreCoordinator;
     }
     
-    NSURL *storeUrl = [NSURL fileURLWithPath: [[DRApplicationPaths applicationHiddenDocumentsDirectory]
-                                               stringByAppendingPathComponent: [self databaseName]]];
+    NSURL *storeUrl = [NSURL fileURLWithPath: [[self applicationCachesDirectory]
+                                               stringByAppendingPathComponent: kDatabaseFilename]];
     
     NSError *error = nil;
     
     NSMutableDictionary *pragmaOptions = [NSMutableDictionary dictionary];
-    [pragmaOptions setObject:@"DELETE" forKey:@"journal_mode"];
-    
+    [pragmaOptions setObject:@"DELETE" forKey:@"journal_mode"]; // easier to have 1 file for debugging?
     
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
                              [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
@@ -182,10 +125,10 @@
     
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc]
                                    initWithManagedObjectModel:[self managedObjectModel]];
+    
     if (![_persistentStoreCoordinator addPersistentStoreWithType:  NSSQLiteStoreType
                                                    configuration:nil URL:storeUrl options:options error:&error]) {
-        @throw [NSException exceptionWithName:@"Persistent Store" reason:[NSString stringWithFormat:@"Unresolved error %@, %@", error, [error userInfo]] userInfo:nil];
-        abort();
+        [self.delegate coreDataSingleton:self didReportError:error];
     }
     
     return _persistentStoreCoordinator;
@@ -196,32 +139,13 @@
     @try {
         NSError *error;
         if (![self.managedObjectContext save:&error]) {
-            NSMutableString *buffer = [[NSMutableString alloc] initWithCapacity:4096];
-            
-            [buffer appendFormat:@"%@*%@**\n",[[UIDevice currentDevice] systemVersion],@"MOC"];
-            [self log:@"Couldn't save MOC: %@" WithVar:[error localizedDescription]];
-            
-            NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
-            if(detailedErrors != nil && [detailedErrors count] > 0) {
-                for(NSError* detailedError in detailedErrors) {
-                    [buffer appendFormat:@"  DetailedError: %@", [detailedError userInfo]];
-                }
+            if (error) {
+                [self.delegate coreDataSingleton:self didReportError:error];
             }
-            else {
-                [buffer appendFormat:@"  %@", [error userInfo]];
-            }
-            
-            [buffer appendFormat:@"MOC: end"];
-            
-            NSError *err;
-            [buffer writeToFile:[DRApplicationPaths.applicationHiddenDocumentsDirectory stringByAppendingPathComponent:@"databaseError.log"] atomically:YES encoding:NSUTF8StringEncoding error:&err];
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"ContextCannotSave" object:nil]; // let any living objects know
         }
     }
     @catch (NSException * e) {
         // oops
-        [self log:@"Exception saving context %@" WithVar:[e reason]];
     }
     
 }
@@ -249,14 +173,43 @@
 - (NSManagedObject *)addObjectForEntityName:(NSString *)entityName {
     NSManagedObject *newObject = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:self.managedObjectContext];
     return newObject;
+};
+
+// **********************************************************************************************
+//								Methods
+// **********************************************************************************************
+
+-(NSFetchRequest*) fetchRequest_photosForTitle: (NSString*) title {
+    NSPredicate *predicate = nil;
+    
+    if (title.length) {
+        predicate = [NSPredicate predicateWithFormat:
+                    @"title contains[cd] %@",title];
+    }
+    
+    NSArray *sortDescriptors = @[
+                                 [NSSortDescriptor sortDescriptorWithKey:@"photoID" ascending:YES]
+                                 ];
+    NSFetchRequest *fetchRequest = [self fetchRequestForEntity:kPhotosEntityName withPredicate:predicate sortDescriptors:sortDescriptors faultsAllowed:YES];
+    
+    return fetchRequest;
 }
 
-// override
-
--(NSString*) dataModelName {
-    return @"database";
+-(NSArray*) allPhotos {
+    NSFetchRequest *fetchRequest = [self fetchRequestForEntity:kPhotosEntityName withPredicate:nil sortDescriptors:nil faultsAllowed:YES];
+    
+    NSError *error = nil;
+    NSArray *photos = [[self managedObjectContext] executeFetchRequest:fetchRequest error:&error];
+    if (error) {
+        [self.delegate coreDataSingleton:self didReportError:error];
+    }
+    return photos;
 }
 
--(NSString*) databaseName {
-    return @"database.sqlite";
+-(TPPhoto*) addPhotoWithID: (NSNumber*) photoID {
+    TPPhoto *photo = (TPPhoto*) [self addObjectForEntityName:kPhotosEntityName];
+    photo.photoID = photoID;
+    return  photo;
 }
+
+@end

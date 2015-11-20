@@ -1,4 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9057" systemVersion="15B42" minimumToolsVersion="Xcode 7.0">
-    <elements/>
+    <entity name="TPAlbum" representedClassName="TPAlbum" syncable="YES">
+        <attribute name="albumID" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="photos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TPPhoto" inverseName="album" inverseEntity="TPPhoto" syncable="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TPUser" inverseName="albums" inverseEntity="TPUser" syncable="YES"/>
+    </entity>
+    <entity name="TPPhoto" representedClassName="TPPhoto" syncable="YES">
+        <attribute name="photoID" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="photoImage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="thumbnailImage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="thumbnailURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="timeStamp" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="album" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TPAlbum" inverseName="photos" inverseEntity="TPAlbum" syncable="YES"/>
+    </entity>
+    <entity name="TPUser" representedClassName="TPUser" syncable="YES">
+        <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userID" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="albums" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TPAlbum" inverseName="user" inverseEntity="TPAlbum" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="TPUser" positionX="-63" positionY="-18" width="128" height="120"/>
+        <element name="TPPhoto" positionX="-54" positionY="18" width="128" height="165"/>
+        <element name="TPAlbum" positionX="-45" positionY="90" width="128" height="105"/>
+    </elements>
 </model>

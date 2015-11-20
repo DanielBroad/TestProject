@@ -1,5 +1,5 @@
 //
-//  TPPhoto+CoreDataProperties.m
+//  TPAlbum+CoreDataProperties.m
 //  TestProject
 //
 //  Created by Daniel Broad on 20/11/2015.
@@ -9,17 +9,13 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "TPPhoto+CoreDataProperties.h"
+#import "TPAlbum+CoreDataProperties.h"
 
-@implementation TPPhoto (CoreDataProperties)
+@implementation TPAlbum (CoreDataProperties)
 
-@dynamic photoID;
+@dynamic albumID;
 @dynamic title;
-@dynamic url;
-@dynamic thumbnailURL;
-@dynamic timeStamp;
-@dynamic thumbnailImage;
-@dynamic photoImage;
-@dynamic album;
+@dynamic photos;
+@dynamic user;
 
 @end

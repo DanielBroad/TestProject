@@ -13,13 +13,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class TPAlbum;
+
 @interface TPPhoto (CoreDataProperties)
 
 @property (nullable, nonatomic, retain) NSNumber *photoID;
 @property (nullable, nonatomic, retain) NSString *title;
 @property (nullable, nonatomic, retain) NSString *url;
 @property (nullable, nonatomic, retain) NSString *thumbnailURL;
-@property (nullable, nonatomic, retain) NSManagedObject *user;
+@property (nullable, nonatomic, retain) NSDate *timeStamp;
+@property (nullable, nonatomic, retain) NSData *thumbnailImage;
+@property (nullable, nonatomic, retain) NSData *photoImage;
+@property (nullable, nonatomic, retain) TPAlbum *album;
 
 @end
 

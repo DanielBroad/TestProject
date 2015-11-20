@@ -8,27 +8,56 @@
 
 /* Begin PBXBuildFile section */
 		65B23A8B1BFF332F002537C3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23A8A1BFF332F002537C3 /* main.m */; };
-		65B23A8E1BFF332F002537C3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23A8D1BFF332F002537C3 /* AppDelegate.m */; };
-		65B23A911BFF332F002537C3 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23A901BFF332F002537C3 /* MasterViewController.m */; };
-		65B23A941BFF332F002537C3 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23A931BFF332F002537C3 /* DetailViewController.m */; };
+		65B23A8E1BFF332F002537C3 /* TPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23A8D1BFF332F002537C3 /* TPAppDelegate.m */; };
 		65B23A971BFF332F002537C3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65B23A951BFF332F002537C3 /* Main.storyboard */; };
 		65B23A991BFF332F002537C3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65B23A981BFF332F002537C3 /* Assets.xcassets */; };
 		65B23A9C1BFF332F002537C3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65B23A9A1BFF332F002537C3 /* LaunchScreen.storyboard */; };
+		65B23AA81BFF3486002537C3 /* TestProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AA61BFF3486002537C3 /* TestProject.xcdatamodeld */; };
+		65B23AAB1BFF359B002537C3 /* TPCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AAA1BFF359B002537C3 /* TPCoreData.m */; };
+		65B23AB91BFF3D68002537C3 /* TPPhoto+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AB21BFF3D68002537C3 /* TPPhoto+CoreDataProperties.m */; };
+		65B23ABA1BFF3D68002537C3 /* TPPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AB41BFF3D68002537C3 /* TPPhoto.m */; };
+		65B23ABB1BFF3D68002537C3 /* TPUser+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AB61BFF3D68002537C3 /* TPUser+CoreDataProperties.m */; };
+		65B23ABC1BFF3D68002537C3 /* TPUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AB81BFF3D68002537C3 /* TPUser.m */; };
+		65B23ABF1BFF433C002537C3 /* TPDataFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23ABE1BFF433C002537C3 /* TPDataFetcher.m */; };
+		65B23ACB1BFF434F002537C3 /* TPDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AC81BFF434F002537C3 /* TPDetailViewController.m */; };
+		65B23ACC1BFF434F002537C3 /* TPMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23ACA1BFF434F002537C3 /* TPMasterViewController.m */; };
+		65B23AD01BFF46A5002537C3 /* TPPhotoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23ACF1BFF46A5002537C3 /* TPPhotoTableViewCell.m */; };
+		65B23ADC1BFF712D002537C3 /* TPAlbum+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AD51BFF712D002537C3 /* TPAlbum+CoreDataProperties.m */; };
+		65B23ADD1BFF712D002537C3 /* TPAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AD71BFF712D002537C3 /* TPAlbum.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		65B23A861BFF332F002537C3 /* TestProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65B23A8A1BFF332F002537C3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		65B23A8C1BFF332F002537C3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		65B23A8D1BFF332F002537C3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		65B23A8F1BFF332F002537C3 /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
-		65B23A901BFF332F002537C3 /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
-		65B23A921BFF332F002537C3 /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
-		65B23A931BFF332F002537C3 /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		65B23A8C1BFF332F002537C3 /* TPAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TPAppDelegate.h; sourceTree = "<group>"; };
+		65B23A8D1BFF332F002537C3 /* TPAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TPAppDelegate.m; sourceTree = "<group>"; };
 		65B23A961BFF332F002537C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		65B23A981BFF332F002537C3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		65B23A9B1BFF332F002537C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		65B23A9D1BFF332F002537C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		65B23AA71BFF3486002537C3 /* TestProject.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TestProject.xcdatamodel; sourceTree = "<group>"; };
+		65B23AA91BFF359B002537C3 /* TPCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCoreData.h; sourceTree = "<group>"; };
+		65B23AAA1BFF359B002537C3 /* TPCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPCoreData.m; sourceTree = "<group>"; };
+		65B23AB11BFF3D68002537C3 /* TPPhoto+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TPPhoto+CoreDataProperties.h"; sourceTree = "<group>"; };
+		65B23AB21BFF3D68002537C3 /* TPPhoto+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TPPhoto+CoreDataProperties.m"; sourceTree = "<group>"; };
+		65B23AB31BFF3D68002537C3 /* TPPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPPhoto.h; sourceTree = "<group>"; };
+		65B23AB41BFF3D68002537C3 /* TPPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPPhoto.m; sourceTree = "<group>"; };
+		65B23AB51BFF3D68002537C3 /* TPUser+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TPUser+CoreDataProperties.h"; sourceTree = "<group>"; };
+		65B23AB61BFF3D68002537C3 /* TPUser+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TPUser+CoreDataProperties.m"; sourceTree = "<group>"; };
+		65B23AB71BFF3D68002537C3 /* TPUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPUser.h; sourceTree = "<group>"; };
+		65B23AB81BFF3D68002537C3 /* TPUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPUser.m; sourceTree = "<group>"; };
+		65B23ABD1BFF433C002537C3 /* TPDataFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPDataFetcher.h; sourceTree = "<group>"; };
+		65B23ABE1BFF433C002537C3 /* TPDataFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPDataFetcher.m; sourceTree = "<group>"; };
+		65B23AC71BFF434F002537C3 /* TPDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPDetailViewController.h; sourceTree = "<group>"; };
+		65B23AC81BFF434F002537C3 /* TPDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPDetailViewController.m; sourceTree = "<group>"; };
+		65B23AC91BFF434F002537C3 /* TPMasterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPMasterViewController.h; sourceTree = "<group>"; };
+		65B23ACA1BFF434F002537C3 /* TPMasterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPMasterViewController.m; sourceTree = "<group>"; };
+		65B23ACE1BFF46A5002537C3 /* TPPhotoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPPhotoTableViewCell.h; sourceTree = "<group>"; };
+		65B23ACF1BFF46A5002537C3 /* TPPhotoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPPhotoTableViewCell.m; sourceTree = "<group>"; };
+		65B23AD41BFF712D002537C3 /* TPAlbum+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TPAlbum+CoreDataProperties.h"; sourceTree = "<group>"; };
+		65B23AD51BFF712D002537C3 /* TPAlbum+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TPAlbum+CoreDataProperties.m"; sourceTree = "<group>"; };
+		65B23AD61BFF712D002537C3 /* TPAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPAlbum.h; sourceTree = "<group>"; };
+		65B23AD71BFF712D002537C3 /* TPAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPAlbum.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,12 +90,12 @@
 		65B23A881BFF332F002537C3 /* TestProject */ = {
 			isa = PBXGroup;
 			children = (
-				65B23A8C1BFF332F002537C3 /* AppDelegate.h */,
-				65B23A8D1BFF332F002537C3 /* AppDelegate.m */,
-				65B23A8F1BFF332F002537C3 /* MasterViewController.h */,
-				65B23A901BFF332F002537C3 /* MasterViewController.m */,
-				65B23A921BFF332F002537C3 /* DetailViewController.h */,
-				65B23A931BFF332F002537C3 /* DetailViewController.m */,
+				65B23ACD1BFF464F002537C3 /* Cells */,
+				65B23AAD1BFF3A46002537C3 /* Network */,
+				65B23AA51BFF3456002537C3 /* View Controller */,
+				65B23AA31BFF3440002537C3 /* Core Data */,
+				65B23A8C1BFF332F002537C3 /* TPAppDelegate.h */,
+				65B23A8D1BFF332F002537C3 /* TPAppDelegate.m */,
 				65B23A951BFF332F002537C3 /* Main.storyboard */,
 				65B23A981BFF332F002537C3 /* Assets.xcassets */,
 				65B23A9A1BFF332F002537C3 /* LaunchScreen.storyboard */,
@@ -82,6 +111,57 @@
 				65B23A8A1BFF332F002537C3 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		65B23AA31BFF3440002537C3 /* Core Data */ = {
+			isa = PBXGroup;
+			children = (
+				65B23AD41BFF712D002537C3 /* TPAlbum+CoreDataProperties.h */,
+				65B23AD51BFF712D002537C3 /* TPAlbum+CoreDataProperties.m */,
+				65B23AD61BFF712D002537C3 /* TPAlbum.h */,
+				65B23AD71BFF712D002537C3 /* TPAlbum.m */,
+				65B23AB11BFF3D68002537C3 /* TPPhoto+CoreDataProperties.h */,
+				65B23AB21BFF3D68002537C3 /* TPPhoto+CoreDataProperties.m */,
+				65B23AB31BFF3D68002537C3 /* TPPhoto.h */,
+				65B23AB41BFF3D68002537C3 /* TPPhoto.m */,
+				65B23AB51BFF3D68002537C3 /* TPUser+CoreDataProperties.h */,
+				65B23AB61BFF3D68002537C3 /* TPUser+CoreDataProperties.m */,
+				65B23AB71BFF3D68002537C3 /* TPUser.h */,
+				65B23AB81BFF3D68002537C3 /* TPUser.m */,
+				65B23AA61BFF3486002537C3 /* TestProject.xcdatamodeld */,
+				65B23AA91BFF359B002537C3 /* TPCoreData.h */,
+				65B23AAA1BFF359B002537C3 /* TPCoreData.m */,
+			);
+			path = "Core Data";
+			sourceTree = "<group>";
+		};
+		65B23AA51BFF3456002537C3 /* View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				65B23AC71BFF434F002537C3 /* TPDetailViewController.h */,
+				65B23AC81BFF434F002537C3 /* TPDetailViewController.m */,
+				65B23AC91BFF434F002537C3 /* TPMasterViewController.h */,
+				65B23ACA1BFF434F002537C3 /* TPMasterViewController.m */,
+			);
+			path = "View Controller";
+			sourceTree = "<group>";
+		};
+		65B23AAD1BFF3A46002537C3 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				65B23ABD1BFF433C002537C3 /* TPDataFetcher.h */,
+				65B23ABE1BFF433C002537C3 /* TPDataFetcher.m */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		65B23ACD1BFF464F002537C3 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				65B23ACE1BFF46A5002537C3 /* TPPhotoTableViewCell.h */,
+				65B23ACF1BFF46A5002537C3 /* TPPhotoTableViewCell.m */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -154,10 +234,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65B23A8E1BFF332F002537C3 /* AppDelegate.m in Sources */,
-				65B23A911BFF332F002537C3 /* MasterViewController.m in Sources */,
+				65B23ABC1BFF3D68002537C3 /* TPUser.m in Sources */,
+				65B23ADD1BFF712D002537C3 /* TPAlbum.m in Sources */,
+				65B23AB91BFF3D68002537C3 /* TPPhoto+CoreDataProperties.m in Sources */,
+				65B23ABB1BFF3D68002537C3 /* TPUser+CoreDataProperties.m in Sources */,
+				65B23A8E1BFF332F002537C3 /* TPAppDelegate.m in Sources */,
+				65B23ACC1BFF434F002537C3 /* TPMasterViewController.m in Sources */,
+				65B23AA81BFF3486002537C3 /* TestProject.xcdatamodeld in Sources */,
+				65B23ADC1BFF712D002537C3 /* TPAlbum+CoreDataProperties.m in Sources */,
+				65B23AD01BFF46A5002537C3 /* TPPhotoTableViewCell.m in Sources */,
+				65B23ABA1BFF3D68002537C3 /* TPPhoto.m in Sources */,
+				65B23ABF1BFF433C002537C3 /* TPDataFetcher.m in Sources */,
+				65B23AAB1BFF359B002537C3 /* TPCoreData.m in Sources */,
 				65B23A8B1BFF332F002537C3 /* main.m in Sources */,
-				65B23A941BFF332F002537C3 /* DetailViewController.m in Sources */,
+				65B23ACB1BFF434F002537C3 /* TPDetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,6 +398,19 @@
 			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		65B23AA61BFF3486002537C3 /* TestProject.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				65B23AA71BFF3486002537C3 /* TestProject.xcdatamodel */,
+			);
+			currentVersion = 65B23AA71BFF3486002537C3 /* TestProject.xcdatamodel */;
+			path = TestProject.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 65B23A7E1BFF332F002537C3 /* Project object */;
 }
