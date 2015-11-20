@@ -8,10 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@class TPPhoto;
+
 @interface TPDetailViewController : UIViewController
 
-@property (strong, nonatomic) id detailItem;
-@property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
+@property (strong, nonatomic) TPPhoto *detailItem;
+
+@property (weak, nonatomic) IBOutlet UIImageView *photoImage;
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *albumLabel;
 
 @end
 

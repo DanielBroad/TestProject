@@ -12,7 +12,7 @@
 
 #import "TPDataFetcher.h"
 
-@interface TPAppDelegate () <UISplitViewControllerDelegate, TPCoreDataDelegate, TPDataFetcherDelegate>
+@interface TPAppDelegate () <UISplitViewControllerDelegate, TPCoreDataDelegate>
 
 @end
 
@@ -23,7 +23,7 @@
     // Override point for customization after application launch.
     
     [TPCoreData sharedInstance].delegate = self;
-    [TPDataFetcher sharedInstance].delegate = self;
+
     UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
     UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
     navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;

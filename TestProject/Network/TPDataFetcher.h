@@ -10,18 +10,10 @@
 
 @class TPDataFetcher;
 
-@protocol TPDataFetcherDelegate <NSObject>
-
--(void) fetcherSingleton: (TPDataFetcher*) singleton didReportError: (NSError*) error;
-
-@end
-
 @interface TPDataFetcher : NSObject
 
 -(instancetype) init NS_UNAVAILABLE;
 +(instancetype) sharedInstance;
-
-@property (weak,nonatomic) id<TPDataFetcherDelegate> delegate;
 
 -(void) validateUserID: (NSInteger) userID completionHandler: (void(^)(BOOL validated, NSError *error)) completionHandler;
 -(BOOL) userIsValidated;

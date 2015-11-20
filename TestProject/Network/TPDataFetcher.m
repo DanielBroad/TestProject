@@ -74,10 +74,15 @@ static TPDataFetcher *singleton;
 -(void) populateDataCompletionHandler: (void(^)(NSError *error)) completionHandler {
     [self populateAlbumsCompletionHandler:^(NSError *error) {
         if (error) {
-            completionHandler(error);
+            if (completionHandler) {
+                completionHandler(error);
+            }
             return;
         }
         
+        NSArray *albumsToUpdate = [TPCoreData sharedInstance].allAlbums;
+        
+        [self populateAlbumPhotos: albumsToUpdate completionHandler:completionHandler];
         
     }];
 }
@@ -92,6 +97,7 @@ static TPDataFetcher *singleton;
         
         if (error) {
             dispatch_sync(dispatch_get_main_queue(), ^{
+                [self stopNetworkActivity];
                 if (completionHandler) {
                     completionHandler(NO,error);
                 }
@@ -103,6 +109,7 @@ static TPDataFetcher *singleton;
         NSDictionary *userDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
         if (parseError) {
             dispatch_sync(dispatch_get_main_queue(), ^{
+                [self stopNetworkActivity];
                 if (completionHandler) {
                     completionHandler(NO,parseError);
                 }
@@ -144,6 +151,8 @@ static TPDataFetcher *singleton;
     return _userIsValidated;
 }
 
+#pragma mark - Albums
+
 -(void) populateAlbumsCompletionHandler: (void(^)(NSError *error)) completionHandler {
     TPUser *user = [TPCoreData sharedInstance].currentUser;
     
@@ -161,7 +170,9 @@ static TPDataFetcher *singleton;
         if (error) {
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [self stopNetworkActivity];
-                [self.delegate fetcherSingleton:self didReportError:error];
+                if (completionHandler) {
+                    completionHandler(error);
+                }
             });
             return;
         }
@@ -171,7 +182,9 @@ static TPDataFetcher *singleton;
         if (parseError) {
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [self stopNetworkActivity];
-                [self.delegate fetcherSingleton:self didReportError:error];
+                if (completionHandler) {
+                    completionHandler(parseError);
+                }
             });
             return;
         }
@@ -192,7 +205,12 @@ static TPDataFetcher *singleton;
                     [existingAlbums addObject:albumID];
                 }
             }
-
+            
+            [[TPCoreData sharedInstance] contextSave];
+            
+            if (completionHandler) {
+                completionHandler(nil);
+            };
         });
     }];
     [self startNetworkActivity];
@@ -200,19 +218,51 @@ static TPDataFetcher *singleton;
     [_activeDownloadTasks addObject:task];
 }
 
--(void) populatePhotos {
+#pragma mark - photos
+
+-(void) populateAlbumPhotos: (NSArray*) albums completionHandler: (void(^)(NSError *error)) completionHandler {
+    if (!albums.count) {
+        completionHandler(nil);
+        return;
+    }
+    
+    TPAlbum *todo = [albums firstObject];
+    NSMutableArray *albumsRemaining = [albums mutableCopy];
+    [albumsRemaining removeObject:todo];
+    
+    [self populatePhotosForAlbum: todo completionHandler:^(NSError *error) {
+        if (error) {
+            if (completionHandler) {
+                completionHandler(error);
+            }
+            return;
+        }
+        
+        [self populateAlbumPhotos:albumsRemaining completionHandler:completionHandler];
+        
+    }];
+}
+
+-(void) populatePhotosForAlbum: (TPAlbum*) album completionHandler: (void(^)(NSError *error)) completionHandler {
+    
+    NSManagedObjectID *albumObjectID = album.objectID;
+    
     NSMutableSet *existingRecords = [NSMutableSet set];
     for (TPPhoto *photo in [TPCoreData sharedInstance].allPhotos) {
         [existingRecords addObject:photo.photoID];
     }
     
-    NSURL *photosURL = [NSURL URLWithString:kPhotosURL];
+    NSString *photosPath = [NSString stringWithFormat:kPhotosURL,(long)[album.albumID integerValue]];
+    NSURL *photosURL = [NSURL URLWithString:photosPath];
+    
     NSLog(@"%@",photosURL);
     NSURLSessionDataTask *task = [_foregroundSession dataTaskWithURL:photosURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error) {
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [self stopNetworkActivity];
-                [self.delegate fetcherSingleton:self didReportError:error];
+                if (completionHandler) {
+                    completionHandler(error);
+                }
             });
             return;
         }
@@ -222,7 +272,9 @@ static TPDataFetcher *singleton;
         if (parseError) {
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [self stopNetworkActivity];
-                [self.delegate fetcherSingleton:self didReportError:error];
+                if (completionHandler) {
+                    completionHandler(parseError);
+                }
             });
             return;
         }
@@ -230,6 +282,11 @@ static TPDataFetcher *singleton;
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self stopNetworkActivity];
             
+            TPAlbum *album = [[TPCoreData sharedInstance].managedObjectContext objectWithID:albumObjectID];
+            if (!album) {
+                // oops
+                return;
+            }
             for (NSDictionary *photoDict in photos) {
                 NSNumber *photoID = [photoDict objectForKey:kDictionaryKeyPhoto_PhotoID];
                 
@@ -237,11 +294,16 @@ static TPDataFetcher *singleton;
                     // guess we should add it then
                     TPPhoto *newPhoto = [[TPCoreData sharedInstance] addPhotoWithID:photoID];
                     [newPhoto populateFromDictionary: photoDict];
+                    newPhoto.album = album;
                     [existingRecords addObject:photoID];
                 }
             }
             
             [[TPCoreData sharedInstance] contextSave];
+            
+            if (completionHandler) {
+                completionHandler(nil);
+            };
         });
     }];
     [self startNetworkActivity];
