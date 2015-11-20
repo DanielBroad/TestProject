@@ -6,14 +6,14 @@
 //  Copyright © 2015 Dorada App Software Ltd. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "TPAppDelegate.h"
 #import "DetailViewController.h"
 
-@interface AppDelegate () <UISplitViewControllerDelegate>
+@interface TPAppDelegate () <UISplitViewControllerDelegate>
 
 @end
 
-@implementation AppDelegate
+@implementation TPAppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {

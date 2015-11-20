@@ -6,15 +6,15 @@
 //  Copyright © 2015 Dorada App Software Ltd. All rights reserved.
 //
 
-#import "MasterViewController.h"
-#import "DetailViewController.h"
+#import "TPMasterViewController.h"
+#import "TPDetailViewController.h"
 
-@interface MasterViewController ()
+@interface TPMasterViewController ()
 
 @property NSMutableArray *objects;
 @end
 
-@implementation MasterViewController
+@implementation TPMasterViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -51,7 +51,7 @@
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         NSDate *object = self.objects[indexPath.row];
-        DetailViewController *controller = (DetailViewController *)[[segue destinationViewController] topViewController];
+        TPDetailViewController *controller = (TPDetailViewController *)[[segue destinationViewController] topViewController];
         [controller setDetailItem:object];
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;

@@ -6,13 +6,13 @@
 //  Copyright © 2015 Dorada App Software Ltd. All rights reserved.
 //
 
-#import "DetailViewController.h"
+#import "TPDetailViewController.h"
 
-@interface DetailViewController ()
+@interface TPDetailViewController ()
 
 @end
 
-@implementation DetailViewController
+@implementation TPDetailViewController
 
 #pragma mark - Managing the detail item
 

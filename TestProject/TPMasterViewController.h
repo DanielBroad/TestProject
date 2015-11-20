@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@class DetailViewController;
+@class TPDetailViewController;
 
-@interface MasterViewController : UITableViewController
+@interface TPMasterViewController : UITableViewController
 
-@property (strong, nonatomic) DetailViewController *detailViewController;
+@property (strong, nonatomic) TPDetailViewController *detailViewController;
 
 
 @end
