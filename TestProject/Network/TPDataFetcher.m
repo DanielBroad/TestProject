@@ -20,11 +20,12 @@ static TPDataFetcher *singleton;
 
 @implementation TPDataFetcher {
     NSURLSession *_foregroundSession;
-    NSMutableArray *_activeDownloadTasks;
     
     NSInteger networkActivity;
     BOOL _userIsValidated;
 }
+
+#pragma mark - Lifecycle
 
 +(instancetype) sharedInstance {
     if (!singleton) {
@@ -42,7 +43,7 @@ static TPDataFetcher *singleton;
         _foregroundSession = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
         
         [_foregroundSession getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-            [_activeDownloadTasks addObjectsFromArray:downloadTasks];
+            
         }];
     }
     return self;
@@ -51,6 +52,8 @@ static TPDataFetcher *singleton;
 // **********************************************************************************************
 //								Handle Network Indicator
 // **********************************************************************************************
+
+#pragma mark - Network Indicator
 
 -(void) startNetworkActivity
 {
@@ -71,6 +74,8 @@ static TPDataFetcher *singleton;
 //								Get Data from Network (No Background Downloads)
 // **********************************************************************************************
 
+#pragma mark - Get Data
+
 -(void) populateDataCompletionHandler: (void(^)(NSError *error)) completionHandler {
     [self populateAlbumsCompletionHandler:^(NSError *error) {
         if (error) {
@@ -86,6 +91,8 @@ static TPDataFetcher *singleton;
         
     }];
 }
+
+#pragma mark - user
 
 -(void) validateUserID: (NSInteger) userID completionHandler: (void(^)(BOOL validated, NSError *error)) completionHandler {
     NSString *validatePath = [NSString stringWithFormat:kUserURL,(long)userID];
@@ -144,7 +151,6 @@ static TPDataFetcher *singleton;
     }];
     [self startNetworkActivity];
     [task resume];
-    [_activeDownloadTasks addObject:task];
 }
 
 -(BOOL) userIsValidated {
@@ -215,10 +221,9 @@ static TPDataFetcher *singleton;
     }];
     [self startNetworkActivity];
     [task resume];
-    [_activeDownloadTasks addObject:task];
 }
 
-#pragma mark - photos
+#pragma mark - Photos
 
 -(void) populateAlbumPhotos: (NSArray*) albums completionHandler: (void(^)(NSError *error)) completionHandler {
     if (!albums.count) {
@@ -282,7 +287,7 @@ static TPDataFetcher *singleton;
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self stopNetworkActivity];
             
-            TPAlbum *album = [[TPCoreData sharedInstance].managedObjectContext objectWithID:albumObjectID];
+            TPAlbum *album = [[TPCoreData sharedInstance].managedObjectContext existingObjectWithID:albumObjectID error:nil];
             if (!album) {
                 // oops
                 return;
@@ -308,7 +313,44 @@ static TPDataFetcher *singleton;
     }];
     [self startNetworkActivity];
     [task resume];
-    [_activeDownloadTasks addObject:task];
 }
 
+// **********************************************************************************************
+//								Load Images
+// **********************************************************************************************
+
+#pragma mark - load images
+
+-(void) loadImageForPhoto: (TPPhoto*) photo thumbnail: (BOOL) thumbnail {
+    NSManagedObjectID *photoObjectID = photo.objectID;
+    
+    NSURL *imageURL = [NSURL URLWithString: thumbnail?photo.thumbnailURL:photo.url];
+    
+    NSLog(@"%@",imageURL);
+    
+    NSURLSessionDataTask *task = [_foregroundSession dataTaskWithURL:imageURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [self stopNetworkActivity];
+            });
+            return;
+        }
+        
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self stopNetworkActivity];
+            TPPhoto *mtPhoto = [[TPCoreData sharedInstance].managedObjectContext existingObjectWithID:photoObjectID error:nil];
+            if (mtPhoto) {
+                if (thumbnail) {
+                    photo.thumbnailImage = data;
+                } else {
+                    photo.photoImage = data;
+                }
+            }
+
+        });
+
+    }];
+    [self startNetworkActivity];
+    [task resume];
+}
 @end

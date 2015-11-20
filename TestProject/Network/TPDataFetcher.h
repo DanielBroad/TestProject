@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class TPDataFetcher;
+@class TPDataFetcher,TPPhoto;
 
 @interface TPDataFetcher : NSObject
 
@@ -19,5 +19,7 @@
 -(BOOL) userIsValidated;
 
 -(void) populateDataCompletionHandler: (void(^)(NSError *error)) completionHandler;
+
+-(void) loadImageForPhoto: (TPPhoto*) photo thumbnail: (BOOL) thumbnail;
 
 @end

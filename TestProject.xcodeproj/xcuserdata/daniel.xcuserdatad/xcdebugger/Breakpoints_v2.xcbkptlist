@@ -9,13 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "TestProject/Network/TPDataFetcher.m"
-            timestampString = "469728348.235327"
+            filePath = "TestProject/Cells/TPPhotoTableViewCell.m"
+            timestampString = "469732815.037258"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "77"
-            endingLineNumber = "77"
-            landmarkName = "-populateDataCompletionHandler:"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
+            landmarkName = "-setPhoto:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

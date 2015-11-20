@@ -8,6 +8,7 @@
 
 #import "TPPhoto.h"
 
+NSString * const kPhotoKeyPath_Image = @"photoImage";
 NSString * const kDictionaryKeyPhoto_PhotoID = @"id";
 NSString * const kDictionaryKeyPhoto_AlbumID = @"albumId";
 NSString * const kDictionaryKeyPhoto_Title = @"title";

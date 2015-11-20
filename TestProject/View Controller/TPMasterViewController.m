@@ -22,6 +22,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.title = NSLocalizedString(@"Photos", nil);
+    
     self.detailViewController = (TPDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     
     self.tableView.rowHeight = 110.0f;

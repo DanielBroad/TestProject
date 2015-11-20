@@ -10,6 +10,8 @@
 #import "TPPhoto.h"
 #import "TPAlbum.h"
 
+#import "TPDataFetcher.h"
+
 @interface TPDetailViewController ()
 
 @end
@@ -18,20 +20,39 @@
 
 #pragma mark - Managing the detail item
 
+- (void) dealloc {
+    self.detailItem = nil;
+}
+
 - (void)setDetailItem:(id)newDetailItem {
     if (_detailItem != newDetailItem) {
+        if (_detailItem) {
+            [_detailItem removeObserver:self forKeyPath:kPhotoKeyPath_Image];
+        }
         _detailItem = newDetailItem;
             
         // Update the view.
         [self configureView];
+        
+        if (_detailItem) {
+            [_detailItem addObserver:self forKeyPath:kPhotoKeyPath_Image options:0 context:nil];
+        }
+        
     }
 }
 
 - (void)configureView {
     // Update the user interface for the detail item.
     if (self.detailItem) {
+        self.title = self.detailItem.url;
         self.titleLabel.text = self.detailItem.title;
         self.albumLabel.text = self.detailItem.album.title;
+        
+        if (self.detailItem.photoImage) {
+            self.photoImage.image = [UIImage imageWithData:self.detailItem.photoImage];
+        } else {
+            [[TPDataFetcher sharedInstance] loadImageForPhoto:self.detailItem thumbnail:NO];
+        }
     }
 }
 
@@ -41,9 +62,7 @@
     [self configureView];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+    [self configureView];
 }
-
 @end

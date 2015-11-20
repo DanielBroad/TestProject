@@ -23,6 +23,8 @@ static NSString * const kAlbumEntityName = @"TPAlbum";
     NSPersistentStoreCoordinator	*_persistentStoreCoordinator;
 }
 
+#pragma mark - Lifecycle
+
 +(instancetype) sharedInstance {
     if (!singleton) {
         static dispatch_once_t onceToken;
@@ -113,6 +115,8 @@ static NSString * const kAlbumEntityName = @"TPAlbum";
     NSURL *storeUrl = [NSURL fileURLWithPath: [[self applicationCachesDirectory]
                                                stringByAppendingPathComponent: kDatabaseFilename]];
     
+    NSLog(@"Data Folder: %@",storeUrl);
+    
     NSError *error = nil;
     
     NSMutableDictionary *pragmaOptions = [NSMutableDictionary dictionary];
@@ -179,6 +183,7 @@ static NSString * const kAlbumEntityName = @"TPAlbum";
 // **********************************************************************************************
 //								Methods
 // **********************************************************************************************
+#pragma mark - Users Methods
 
 -(TPUser*) currentUser {
     NSFetchRequest *fetchRequest = [self fetchRequestForEntity:kUserEntityName withPredicate:nil sortDescriptors:nil faultsAllowed:YES];
@@ -197,6 +202,8 @@ static NSString * const kAlbumEntityName = @"TPAlbum";
     return user;
 }
 
+#pragma mark - Albums Methods
+
 -(NSArray*) allAlbums {
     NSFetchRequest *fetchRequest = [self fetchRequestForEntity:kAlbumEntityName withPredicate:nil sortDescriptors:nil faultsAllowed:YES];
     
@@ -213,6 +220,8 @@ static NSString * const kAlbumEntityName = @"TPAlbum";
     album.albumID = albumID;
     return album;
 }
+
+#pragma mark - Photos Methods
 
 -(NSFetchRequest*) fetchRequest_photosForTitle: (NSString*) title {
     NSPredicate *predicate = nil;
