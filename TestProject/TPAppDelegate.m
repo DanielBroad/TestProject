@@ -12,11 +12,14 @@
 
 #import "TPDataFetcher.h"
 
+#import "Reachability.h"
 @interface TPAppDelegate () <UISplitViewControllerDelegate, TPCoreDataDelegate>
 
 @end
 
-@implementation TPAppDelegate
+@implementation TPAppDelegate {
+    Reachability *_internetReach;
+}
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -28,6 +31,10 @@
     UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
     navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
     splitViewController.delegate = self;
+    
+    _internetReach = [Reachability reachabilityForInternetConnection];
+    [_internetReach startNotifier];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
     return YES;
 }
 
@@ -45,22 +52,10 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    if (![TPDataFetcher sharedInstance].userIsValidated) {
-        NSNumber *currentUserID = [TPCoreData sharedInstance].currentUser.userID;
-        if (!currentUserID) {
-            currentUserID = @1;
-        }
-        [[TPDataFetcher sharedInstance] validateUserID:[currentUserID integerValue] completionHandler:^(BOOL validated, NSError *error) {
-            if (error) {
-                [self reportError: error isTerminal: YES];
-            } else {
-                [[TPDataFetcher sharedInstance] populateDataCompletionHandler:^(NSError *error) {
-                    if (error) {
-                        [self reportError: error isTerminal: YES];
-                    };
-                }];
-            }
-        }];
+    [self validateUser];
+    if (![self connectedToNetwork]) {
+        NSError *error = [NSError errorWithDomain:@"TestProject" code:0 userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Warning, No internet connection detected!", nil)}];
+        [self reportError:error isTerminal:NO];
     }
     
 }
@@ -111,4 +106,62 @@
     [self reportError:error isTerminal:YES];
 }
 
+#pragma mark - validate user
+
+-(void) validateUser {
+    if (![TPDataFetcher sharedInstance].userIsValidated && [self connectedToNetwork]) {
+        NSNumber *currentUserID = [TPCoreData sharedInstance].currentUser.userID;
+        if (!currentUserID) {
+            currentUserID = @1;
+        }
+        [[TPDataFetcher sharedInstance] validateUserID:[currentUserID integerValue] completionHandler:^(BOOL validated, NSError *error) {
+            if (error) {
+                [self reportError: error isTerminal: NO];
+            } else {
+                [[TPDataFetcher sharedInstance] populateDataCompletionHandler:^(NSError *error) {
+                    if (error) {
+                        [self reportError: error isTerminal: NO];
+                    };
+                }];
+            }
+        }];
+    }
+}
+
+#pragma mark - reachability
+
+-(BOOL) connectedToNetwork {
+    //return NO;
+    NetworkStatus netStatus = [_internetReach currentReachabilityStatus];
+    
+    switch (netStatus)
+    {
+        case NotReachable:
+        {
+            return NO;
+            break;
+        }
+            
+        case ReachableViaWWAN:
+        {
+            return YES;
+            break;
+        }
+        case ReachableViaWiFi:
+        {
+            return YES;
+            break;
+        }
+    }
+    return NO;
+    
+}
+
+
+-(void) reachabilityChanged: (NSNotification*) notif {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self validateUser];
+    });
+    
+}
 @end

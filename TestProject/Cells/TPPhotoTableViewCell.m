@@ -38,7 +38,13 @@ static NSDateFormatter *photoCellDateFormatter;
             UIImage *image = [UIImage imageWithData:photo.thumbnailImage];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (expectedTagIfCellHasNotBeenReused == self.photoThumbnail.tag) {
-                    self.photoThumbnail.image = image;
+                    [UIView transitionWithView:self.photoThumbnail
+                                      duration:0.1f
+                                       options:UIViewAnimationOptionTransitionCrossDissolve
+                                    animations:^{
+                                        self.photoThumbnail.image = image;
+                                    } completion:nil];
+                    
                 } else {
                     NSLog(@"Aborted image, the cell has been reused since");
                 }

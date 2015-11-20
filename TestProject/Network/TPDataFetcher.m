@@ -326,7 +326,7 @@ static TPDataFetcher *singleton;
     
     NSURL *imageURL = [NSURL URLWithString: thumbnail?photo.thumbnailURL:photo.url];
     
-    NSLog(@"%@",imageURL);
+    NSLog(@"Loading URL %@",imageURL);
     
     NSURLSessionDataTask *task = [_foregroundSession dataTaskWithURL:imageURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error) {
@@ -338,7 +338,7 @@ static TPDataFetcher *singleton;
         
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self stopNetworkActivity];
-            TPPhoto *mtPhoto = [[TPCoreData sharedInstance].managedObjectContext existingObjectWithID:photoObjectID error:nil];
+            TPPhoto *mtPhoto = [[TPCoreData sharedInstance].managedObjectContext objectWithID:photoObjectID];
             if (mtPhoto) {
                 if (thumbnail) {
                     photo.thumbnailImage = data;

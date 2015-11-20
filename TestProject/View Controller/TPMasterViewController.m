@@ -22,7 +22,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"Photos", nil);
     
     self.detailViewController = (TPDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     
@@ -34,6 +33,11 @@
                                  sectionNameKeyPath:nil
                                  cacheName:nil];
     _fetchedResultsController.delegate = self;
+    
+}
+
+-(void) setupTitle {
+    self.title = [NSString stringWithFormat:@"%d %@",_fetchedResultsController.fetchedObjects.count,NSLocalizedString(@"Photos", nil)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -45,6 +49,7 @@
         abort();
     }
     [self.tableView reloadData];
+    [self setupTitle];
     
 }
 
@@ -129,6 +134,7 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     [self.tableView endUpdates];
+    [self setupTitle];
 }
 
 @end

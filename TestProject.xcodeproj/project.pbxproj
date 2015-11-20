@@ -24,6 +24,7 @@
 		65B23AD01BFF46A5002537C3 /* TPPhotoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23ACF1BFF46A5002537C3 /* TPPhotoTableViewCell.m */; };
 		65B23ADC1BFF712D002537C3 /* TPAlbum+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AD51BFF712D002537C3 /* TPAlbum+CoreDataProperties.m */; };
 		65B23ADD1BFF712D002537C3 /* TPAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AD71BFF712D002537C3 /* TPAlbum.m */; };
+		65B23AE21BFF9F60002537C3 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AE11BFF9F60002537C3 /* Reachability.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,8 @@
 		65B23AD51BFF712D002537C3 /* TPAlbum+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TPAlbum+CoreDataProperties.m"; sourceTree = "<group>"; };
 		65B23AD61BFF712D002537C3 /* TPAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPAlbum.h; sourceTree = "<group>"; };
 		65B23AD71BFF712D002537C3 /* TPAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPAlbum.m; sourceTree = "<group>"; };
+		65B23AE01BFF9F60002537C3 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		65B23AE11BFF9F60002537C3 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +111,8 @@
 		65B23A891BFF332F002537C3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				65B23AE01BFF9F60002537C3 /* Reachability.h */,
+				65B23AE11BFF9F60002537C3 /* Reachability.m */,
 				65B23A8A1BFF332F002537C3 /* main.m */,
 			);
 			name = "Supporting Files";
@@ -239,6 +244,7 @@
 				65B23ADD1BFF712D002537C3 /* TPAlbum.m in Sources */,
 				65B23AB91BFF3D68002537C3 /* TPPhoto+CoreDataProperties.m in Sources */,
 				65B23ABB1BFF3D68002537C3 /* TPUser+CoreDataProperties.m in Sources */,
+				65B23AE21BFF9F60002537C3 /* Reachability.m in Sources */,
 				65B23A8E1BFF332F002537C3 /* TPAppDelegate.m in Sources */,
 				65B23ACC1BFF434F002537C3 /* TPMasterViewController.m in Sources */,
 				65B23AA81BFF3486002537C3 /* TestProject.xcdatamodeld in Sources */,

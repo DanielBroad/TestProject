@@ -32,7 +32,10 @@
         _detailItem = newDetailItem;
             
         // Update the view.
-        [self configureView];
+        if (self.isViewLoaded) {
+            [self configureView];
+        }
+        
         
         if (_detailItem) {
             [_detailItem addObserver:self forKeyPath:kPhotoKeyPath_Image options:0 context:nil];
@@ -48,11 +51,20 @@
         self.titleLabel.text = self.detailItem.title;
         self.albumLabel.text = self.detailItem.album.title;
         
-        if (self.detailItem.photoImage) {
-            self.photoImage.image = [UIImage imageWithData:self.detailItem.photoImage];
-        } else {
-            [[TPDataFetcher sharedInstance] loadImageForPhoto:self.detailItem thumbnail:NO];
+        if (!self.photoImage.image) {
+            if (self.detailItem.photoImage) {
+                [UIView transitionWithView:self.photoImage
+                                  duration:0.3f
+                                   options:UIViewAnimationOptionTransitionCrossDissolve
+                                animations:^{
+                                    self.photoImage.image = [UIImage imageWithData:self.detailItem.photoImage];
+                                } completion:nil];
+                
+            } else {
+                [[TPDataFetcher sharedInstance] loadImageForPhoto:self.detailItem thumbnail:NO];
+            }
         }
+
     }
 }
 
