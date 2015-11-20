@@ -25,6 +25,8 @@
 		65B23ADC1BFF712D002537C3 /* TPAlbum+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AD51BFF712D002537C3 /* TPAlbum+CoreDataProperties.m */; };
 		65B23ADD1BFF712D002537C3 /* TPAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AD71BFF712D002537C3 /* TPAlbum.m */; };
 		65B23AE21BFF9F60002537C3 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AE11BFF9F60002537C3 /* Reachability.m */; };
+		65B23AE61BFFA56C002537C3 /* TPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AE51BFFA56C002537C3 /* TPLoginViewController.m */; };
+		65B23AED1BFFA62B002537C3 /* TPLoginButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B23AEC1BFFA62B002537C3 /* TPLoginButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +63,10 @@
 		65B23AD71BFF712D002537C3 /* TPAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPAlbum.m; sourceTree = "<group>"; };
 		65B23AE01BFF9F60002537C3 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		65B23AE11BFF9F60002537C3 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		65B23AE41BFFA56C002537C3 /* TPLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPLoginViewController.h; sourceTree = "<group>"; };
+		65B23AE51BFFA56C002537C3 /* TPLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPLoginViewController.m; sourceTree = "<group>"; };
+		65B23AEB1BFFA62B002537C3 /* TPLoginButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPLoginButton.h; sourceTree = "<group>"; };
+		65B23AEC1BFFA62B002537C3 /* TPLoginButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPLoginButton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +99,7 @@
 		65B23A881BFF332F002537C3 /* TestProject */ = {
 			isa = PBXGroup;
 			children = (
+				65B23AE71BFFA5BC002537C3 /* CustomViews */,
 				65B23ACD1BFF464F002537C3 /* Cells */,
 				65B23AAD1BFF3A46002537C3 /* Network */,
 				65B23AA51BFF3456002537C3 /* View Controller */,
@@ -147,6 +154,8 @@
 				65B23AC81BFF434F002537C3 /* TPDetailViewController.m */,
 				65B23AC91BFF434F002537C3 /* TPMasterViewController.h */,
 				65B23ACA1BFF434F002537C3 /* TPMasterViewController.m */,
+				65B23AE41BFFA56C002537C3 /* TPLoginViewController.h */,
+				65B23AE51BFFA56C002537C3 /* TPLoginViewController.m */,
 			);
 			path = "View Controller";
 			sourceTree = "<group>";
@@ -167,6 +176,15 @@
 				65B23ACF1BFF46A5002537C3 /* TPPhotoTableViewCell.m */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		65B23AE71BFFA5BC002537C3 /* CustomViews */ = {
+			isa = PBXGroup;
+			children = (
+				65B23AEB1BFFA62B002537C3 /* TPLoginButton.h */,
+				65B23AEC1BFFA62B002537C3 /* TPLoginButton.m */,
+			);
+			path = CustomViews;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -247,6 +265,7 @@
 				65B23AE21BFF9F60002537C3 /* Reachability.m in Sources */,
 				65B23A8E1BFF332F002537C3 /* TPAppDelegate.m in Sources */,
 				65B23ACC1BFF434F002537C3 /* TPMasterViewController.m in Sources */,
+				65B23AED1BFFA62B002537C3 /* TPLoginButton.m in Sources */,
 				65B23AA81BFF3486002537C3 /* TestProject.xcdatamodeld in Sources */,
 				65B23ADC1BFF712D002537C3 /* TPAlbum+CoreDataProperties.m in Sources */,
 				65B23AD01BFF46A5002537C3 /* TPPhotoTableViewCell.m in Sources */,
@@ -254,6 +273,7 @@
 				65B23ABF1BFF433C002537C3 /* TPDataFetcher.m in Sources */,
 				65B23AAB1BFF359B002537C3 /* TPCoreData.m in Sources */,
 				65B23A8B1BFF332F002537C3 /* main.m in Sources */,
+				65B23AE61BFFA56C002537C3 /* TPLoginViewController.m in Sources */,
 				65B23ACB1BFF434F002537C3 /* TPDetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

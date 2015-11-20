@@ -36,7 +36,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" misplaced="YES" text="&lt;-- Choose an photo" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="0XM-y9-sOw">
+                            <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" misplaced="YES" text="&lt;-- Choose a photo" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="0XM-y9-sOw">
                                 <rect key="frame" x="20" y="471" width="560" height="17"/>
                                 <animations/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -168,10 +168,64 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Master" id="Zdf-7t-Un8"/>
+                    <connections>
+                        <segue destination="Jfk-nN-7S9" kind="presentation" identifier="login" id="kXI-Tr-HeT"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rux-fX-hf1" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="709" y="-630"/>
+        </scene>
+        <!--Login View Controller-->
+        <scene sceneID="Tb0-Bc-mMe">
+            <objects>
+                <viewController id="Wh0-PP-RxZ" customClass="TPLoginViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="URN-UJ-Bdm"/>
+                        <viewControllerLayoutGuide type="bottom" id="6wf-of-12Y"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="q5d-zQ-r6K">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="L5s-eP-frT">
+                                <rect key="frame" x="30" y="97" width="540" height="30"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="numberPad" returnKeyType="done"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m8b-Wx-9CD" customClass="TPLoginButton">
+                                <rect key="frame" x="51" y="154" width="498" height="30"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="S24-AJ-Ix6"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                <state key="normal" title="Login"/>
+                                <connections>
+                                    <action selector="login:" destination="Wh0-PP-RxZ" eventType="touchUpInside" id="eV5-ac-m8Q"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="L5s-eP-frT" firstAttribute="leading" secondItem="q5d-zQ-r6K" secondAttribute="leadingMargin" constant="10" id="Bnl-a5-gVE"/>
+                            <constraint firstItem="L5s-eP-frT" firstAttribute="top" secondItem="URN-UJ-Bdm" secondAttribute="bottom" constant="33" id="EoW-Cj-YuM"/>
+                            <constraint firstItem="m8b-Wx-9CD" firstAttribute="leading" secondItem="L5s-eP-frT" secondAttribute="leading" id="U09-b4-XEl"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="L5s-eP-frT" secondAttribute="trailing" constant="10" id="Vhr-Uv-22U"/>
+                            <constraint firstItem="m8b-Wx-9CD" firstAttribute="top" secondItem="L5s-eP-frT" secondAttribute="bottom" constant="27" id="ruO-2L-gdQ"/>
+                            <constraint firstItem="m8b-Wx-9CD" firstAttribute="trailing" secondItem="L5s-eP-frT" secondAttribute="trailing" id="sua-07-BBe"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="bTp-UO-Hhg"/>
+                    <connections>
+                        <outlet property="useridTextField" destination="L5s-eP-frT" id="7Wv-7l-KwB"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VEX-n6-0F6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1468" y="-509"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="r7l-gg-dq7">
@@ -188,6 +242,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SLD-UC-DBI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-45" y="129"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="KS3-bn-Ubq">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Jfk-nN-7S9" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="YA2-Y2-obZ">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <animations/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Wh0-PP-RxZ" kind="relationship" relationship="rootViewController" id="CeN-iz-6gr"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QLj-Gb-n10" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1468" y="-1245"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>

@@ -13,11 +13,13 @@
 
 #import "TPPhotoTableViewCell.h"
 
-@interface TPMasterViewController () <NSFetchedResultsControllerDelegate>
+@interface TPMasterViewController () <NSFetchedResultsControllerDelegate,UISearchBarDelegate>
 @end
 
 @implementation TPMasterViewController {
     NSFetchedResultsController *_fetchedResultsController;
+    
+    UISearchBar *_searchBar;
 }
 
 - (void)viewDidLoad {
@@ -27,35 +29,51 @@
     
     self.tableView.rowHeight = 110.0f;
     
-    _fetchedResultsController = [[NSFetchedResultsController alloc]
-                                 initWithFetchRequest:[[TPCoreData sharedInstance] fetchRequest_photosForTitle:nil]
-                                 managedObjectContext:[TPCoreData sharedInstance].managedObjectContext
-                                 sectionNameKeyPath:nil
-                                 cacheName:nil];
-    _fetchedResultsController.delegate = self;
+    [self setupFetchedResultsController];
     
-}
-
--(void) setupTitle {
-    self.title = [NSString stringWithFormat:@"%d %@",_fetchedResultsController.fetchedObjects.count,NSLocalizedString(@"Photos", nil)];
+    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
+    _searchBar.showsCancelButton = YES;
+    _searchBar.delegate = self;
+    _searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
+    [_searchBar sizeToFit];
+    
+    self.tableView.tableHeaderView = _searchBar;
+    self.tableView.contentOffset = CGPointMake(0, _searchBar.bounds.size.height);
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Login", nil) style:UIBarButtonItemStylePlain target:self action:@selector(login:)];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
     [super viewWillAppear:animated];
     
-    NSError *error = nil;
-    if (![_fetchedResultsController performFetch:&error]) {
-        abort();
-    }
     [self.tableView reloadData];
     [self setupTitle];
     
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+-(void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [_searchBar resignFirstResponder];
+}
+
+-(void) setupFetchedResultsController {
+    _fetchedResultsController = [[NSFetchedResultsController alloc]
+                                 initWithFetchRequest:[[TPCoreData sharedInstance] fetchRequest_photosForTitle:_searchBar.text]
+                                 managedObjectContext:[TPCoreData sharedInstance].managedObjectContext
+                                 sectionNameKeyPath:nil
+                                 cacheName:nil];
+    _fetchedResultsController.delegate = self;
+    NSError *error = nil;
+    if (![_fetchedResultsController performFetch:&error]) {
+        abort();
+    }
+    [self.tableView reloadData];
+}
+
+-(void) setupTitle {
+    self.title = [NSString stringWithFormat:@"%lu %@",_fetchedResultsController.fetchedObjects.count,NSLocalizedString(@"Photos", nil)];
 }
 
 #pragma mark - Segues
@@ -137,4 +155,26 @@
     [self setupTitle];
 }
 
+#pragma mark - UISearchBarDelegate
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [self setupFetchedResultsController];
+    [searchBar resignFirstResponder];
+}
+
+- (void)searchBarBookmarkButtonClicked:(UISearchBar *)searchBar {
+    
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    searchBar.text = nil;
+    [self setupFetchedResultsController];
+    [searchBar resignFirstResponder];
+}
+
+#pragma mark - login
+
+-(void) login: (UIBarButtonItem*) sender {
+    [self performSegueWithIdentifier:@"login" sender:self];
+}
 @end

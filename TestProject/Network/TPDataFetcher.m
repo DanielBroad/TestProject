@@ -95,62 +95,82 @@ static TPDataFetcher *singleton;
 #pragma mark - user
 
 -(void) validateUserID: (NSInteger) userID completionHandler: (void(^)(BOOL validated, NSError *error)) completionHandler {
-    NSString *validatePath = [NSString stringWithFormat:kUserURL,(long)userID];
-    NSURL *validateURL = [NSURL URLWithString:validatePath];
     
-    NSLog(@"%@",validateURL);
-    
-    NSURLSessionDataTask *task = [_foregroundSession dataTaskWithURL:validateURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        
-        if (error) {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                [self stopNetworkActivity];
-                if (completionHandler) {
-                    completionHandler(NO,error);
-                }
-            });
-            return;
-        }
-        
-        NSError *parseError = nil;
-        NSDictionary *userDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
-        if (parseError) {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                [self stopNetworkActivity];
-                if (completionHandler) {
-                    completionHandler(NO,parseError);
-                }
-            });
-            return;
+    // cancel anything going on
+    [_foregroundSession getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+        for (NSURLSessionTask *task in dataTasks) {
+            [task cancel];
         }
         
         dispatch_sync(dispatch_get_main_queue(), ^{
-            [self stopNetworkActivity];
+            NSString *validatePath = [NSString stringWithFormat:kUserURL,(long)userID];
+            NSURL *validateURL = [NSURL URLWithString:validatePath];
             
-            NSNumber *userID = [userDict objectForKey:kDictionaryKeyPhoto_PhotoID];
+            NSLog(@"%@",validateURL);
             
-            TPUser *user = [[TPCoreData sharedInstance] currentUser];
-            if (!user || [user.userID compare:userID]!=NSOrderedSame) {
-                if (user) {
-                    [[TPCoreData sharedInstance].managedObjectContext deleteObject:user];
+            NSURLSessionDataTask *task = [_foregroundSession dataTaskWithURL:validateURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                
+                if (error) {
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        [self stopNetworkActivity];
+                        if (completionHandler) {
+                            completionHandler(NO,error);
+                        }
+                    });
+                    return;
                 }
-                user = [[TPCoreData sharedInstance] addUserWithID: userID];
-                [user populateFromDictionary: userDict];
-            }
-            
-            if ([[TPCoreData sharedInstance] currentUser]) {
-                _userIsValidated = YES;
-            }
-            if (completionHandler) {
-                completionHandler(_userIsValidated,nil);
-            }
-            
-            
+                
+                NSError *parseError = nil;
+                NSDictionary *userDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+                if (parseError) {
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        [self stopNetworkActivity];
+                        if (completionHandler) {
+                            completionHandler(NO,parseError);
+                        }
+                    });
+                    return;
+                }
+                
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    [self stopNetworkActivity];
+                    
+                    NSNumber *userID = [userDict objectForKey:kDictionaryKeyPhoto_PhotoID];
+                    
+                    TPUser *user = [[TPCoreData sharedInstance] currentUser];
+                    if (userID && (!user || [user.userID compare:userID]!=NSOrderedSame)) {
+                        if (user) {
+                            [[TPCoreData sharedInstance].managedObjectContext deleteObject:user];
+                        }
+                        user = [[TPCoreData sharedInstance] addUserWithID: userID];
+                        [user populateFromDictionary: userDict];
+                    } else if (!userID) {
+                        if (user) {
+                            [[TPCoreData sharedInstance].managedObjectContext deleteObject:user];
+                        }
+                    }
+                    
+                    if ([[TPCoreData sharedInstance] currentUser]) {
+                        _userIsValidated = YES;
+                    } else {
+                        _userIsValidated = NO;
+                    }
+                    
+                    if (completionHandler) {
+                        completionHandler(_userIsValidated,nil);
+                    }
+                    
+                    
+                });
+                
+            }];
+            [self startNetworkActivity];
+            [task resume];
         });
-        
+
     }];
-    [self startNetworkActivity];
-    [task resume];
+    
+
 }
 
 -(BOOL) userIsValidated {
@@ -227,7 +247,9 @@ static TPDataFetcher *singleton;
 
 -(void) populateAlbumPhotos: (NSArray*) albums completionHandler: (void(^)(NSError *error)) completionHandler {
     if (!albums.count) {
-        completionHandler(nil);
+        if (completionHandler) {
+            completionHandler(nil);
+        }
         return;
     }
     
